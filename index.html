@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Digital Clock</title>
+</head>
+<body>
+    <div class="wrap-1">
+        <div class="container">
+            <div class="row">
+                <div class="col-4">
+                    <h1><i class="fa-solid fa-2x fa-stopwatch"></i></h1>
+                    <div class="watch">
+                        <div class="stopwatch">
+                        <h2 class="stop"><span class="hours">00</span>:<span class="minutes">00</span>:<span class="seconds">00</span>:<span class="milli-seconds">00</span></h2>
+                        <button class="btn-1">start</button>
+                    </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <h1><i class="fa-solid fa-2x fa-clock"></i></h1>
+                    <div class="watch">
+                       <div class="time">
+                        <div class="second"></div>
+                        <div class="minute"></div>
+                        <div class="hour"></div>
+                        <div class="point"></div>
+                       </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <h1><i class="fa-solid fa-2x fa-bell"></i></h1>
+                    <div class="watch">
+                     <audio src="./audio/alarm.mp3" class="tune"></audio>
+                        <div class="alarm">
+                            <div class="select-box">
+                            <select name="select-hour" id="slc">
+                            <option value="Hour" hidden>Hour</option>
+                           </select>
+                         
+                           <select name="select-minute" id="slc-m">
+                            <option value="Minute" hidden>Minute</option>
+                           </select>
+
+                           <select name="select-AM" id="slc-am">
+                            <option value="AM/PM" hidden>AM/PM</option>
+                           </select>
+
+                           <button class="add">Add</button> <br>
+                        </div>
+                           <div class="list-con">
+                            <ul class="list">
+                                 
+                            </ul>
+                        </div>
+                        
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="fa-solid fa-bell alarm-bell"></span>
+    </div>
+
+    <script>
+        function clock(){
+       let dt=new Date();
+       let hour=dt.getHours();
+       let min=dt.getMinutes();
+       let sec=dt.getSeconds();     
+        document.querySelector(".second").style.transform=`rotate(${sec*6-90}deg)`;
+        document.querySelector(".minute").style.transform=`rotate(${min*6-90}deg)`;
+        document.querySelector(".hour").style.transform=`rotate(${hour*30+min*0.5-90}deg)`;
+    }
+    setInterval(clock, 1000);
+    
+
+
+        let btn=document.querySelector(".btn-1");
+       btn.addEventListener("click", function(e){
+        e.preventDefault();
+        console.log(e.target.textContent);
+        if(e.target.textContent==="start"){
+        let hours=document.querySelector(".hours");
+        let minutes=document.querySelector(".minutes");
+        let seconds=document.querySelector(".seconds");
+        let milli_seconds=document.querySelector(".milli-seconds");
+
+        let hour=hours.textContent;
+        let minute=minutes.textContent;
+        let second=seconds.textContent;
+        let ms=milli_seconds.textContent;
+
+        hour=Number(hour);
+        minute=Number(minute);
+        second=Number(second);
+        ms=Number(ms);
+
+        function time(){
+            ms=ms+1;
+            
+            milli_seconds.innerHTML="0"+ms;
+                
+                if(ms>9){
+                    milli_seconds.innerHTML=ms;
+                }
+
+            if(ms>58){
+                ms=0;
+                second=second+1;
+                seconds.innerHTML="0"+second;
+                
+                if(second>9){
+                    seconds.innerHTML=second;
+                }
+                if(second>58){
+                    second=0;
+                    minute=minute+1;
+                    minutes.innerHTML="0"+minute;
+                    if(minute>9){
+                    minutes.innerHTML=minute;
+                }
+                    if(minute>58){
+                        minute=0;
+                        hour=hour+1;
+                        hours.innerHTML="0"+hour;
+                        if(hour>9){
+                        hours.innerHTML=hour;
+                }
+                    }
+                }
+            }
+        }
+        let tmr=setInterval(time, 15)
+        btn.classList.toggle("btn-stop");
+        let stop=document.querySelector(".btn-stop");
+         stop.textContent="stop";
+         stop.addEventListener("click", function(e){
+            e.preventDefault(); 
+            if(e.target.textContent==="stop"){
+                clearInterval(tmr);
+                stop.textContent="start";
+            }
+            btn.classList.toggle("btn-1");
+        })
+            }
+       })
+
+       let slc_hour=document.getElementById("slc");
+       for(let i=1; i<=12; i++){
+       i= i < 10 ? "0"+i : i;
+        const option=document.createElement("option");
+        option.innerHTML+=`<option vlaue=${i}>${i}</option>`;
+        document.getElementById("slc").appendChild(option);
+       }
+       
+       let slc_minute=document.getElementById("slc-m"); 
+       for(let m=0;m<=59;m++){
+        m= m<10? "0"+m:m;
+        const minute=document.createElement("option");
+        minute.innerHTML+=m;
+        slc_minute.appendChild(minute);
+       }
+
+     let slc_am=document.getElementById("slc-am");
+     for(let a=1;a<=2;a++){
+        const am=document.createElement("option");
+        if(a==1){
+            am.innerHTML="am";
+        }
+        else if(a==2){
+            am.innerHTML="pm";
+        }
+        slc_am.appendChild(am);
+     }
+     document.querySelector(".add").addEventListener("click",function(e){
+        e.preventDefault();
+        let slc_hour=document.getElementById("slc").value;
+        let slc_minute=document.getElementById("slc-m").value;
+        let slc_am=document.getElementById("slc-am").value;
+        if(slc_hour<10){
+            slc_hour=slc_hour.substring(1,3);
+        }
+        let r=slc_hour+":"+slc_minute+":00"+" " +slc_am;
+   
+        let list=document.createElement("li");
+        list.innerHTML=r;
+        list.classList.add("alarm-time")
+        document.querySelector(".list").appendChild(list);
+        function rt(){
+            let li=document.querySelectorAll(".alarm-time");
+            for(var i=0; i<li.length; i++)
+            {
+              let givenTime=li[i].textContent;
+             let tr=new Date();
+              let realTime=tr.toLocaleTimeString();
+              console.log(realTime, ":", givenTime);
+              let count=0;
+                if(givenTime===realTime)
+                {
+                console.log("time matched");
+                let audio=document.querySelector(".tune");
+                audio.play();
+                document.querySelector(".alarm-bell").style.opacity="1";
+                function cnt(){
+                    count=count+1;
+                    console.log("count: ", count);
+                    if(count==30){
+                    document.querySelector(".alarm-bell").style.opacity="0";
+                }
+                }
+                setInterval(cnt, 1000)
+                
+                
+                
+            }
+            }
+            
+           
+        
+       }
+
+       setInterval(rt,1000);
+     }) 
+    </script>
+</body>
+</html>
